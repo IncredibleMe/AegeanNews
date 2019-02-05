@@ -14,15 +14,21 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class GrabNews extends AsyncTask<Void, Void, ArrayList<News> > {
+public class GrabNewsSamos extends AsyncTask<Void, Void, ArrayList<News> > {
     public AsyncResponse delegate = null;
-    public void grabSamos24() {
+    private boolean allNews;
 
+    public GrabNewsSamos(boolean allNews) {
+        this.allNews = allNews;
+    }
+
+    public void grabSamos24(boolean allNews ) {
+        this.allNews = allNews;
     }
 
     @Override
     protected void onPostExecute(ArrayList<News> news) {
-        delegate.processFinish(news);
+        delegate.processFinish(news, "Samos", allNews);
     }
 
     @Override
@@ -40,10 +46,10 @@ public class GrabNews extends AsyncTask<Void, Void, ArrayList<News> > {
             for (Element page : linksOnPage) {
                 Elements titles = page.select("h2");
                 news.add(new News());
-                //System.out.println(titles.html());
-
+                news.get(i).setSitename("www.samos24.gr");
                 news.get(i++).setTitle(titles.html());
-
+                if (i==10)
+                    break;
             }
             //query for getting the news image
             i = 0;
@@ -60,6 +66,16 @@ public class GrabNews extends AsyncTask<Void, Void, ArrayList<News> > {
                     e.printStackTrace();
                 }
                 news.get(i++).setImageBit(mIcon11);
+                if (i==10)
+                    break;
+            }
+
+            Element column = document.getElementById("mvp-feat-tab-col1");
+            //query for getting the news title
+            i = 0;
+            for (Element link : column.select("a[href]")) {
+                //gets all the links of each new and set them to the approriate new object
+                news.get(i++).setLink(link.attr("abs:href"));
             }
         } catch (IOException e) {
             System.err.println("For '" + URL + "': " + e.getMessage());

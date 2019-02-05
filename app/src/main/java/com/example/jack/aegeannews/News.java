@@ -13,16 +13,20 @@ public class News {
     private String content;
     private Date imerominia;
     private Bitmap imageBit;
+    private String link;
+    private String sitename;
 
     public News() {
     }
 
-    public News(int id, String title, String image, String content, Date imerominia) {
+    public News(int id, String title, String image, String content, Date imerominia, String link, String sitename) {
         this.id = id;
         this.title = title;
         this.image = image;
         this.content = content;
         this.imerominia = imerominia;
+        this.link = link;
+        this.sitename = sitename;
     }
 
     public Bitmap getImageBit() {
@@ -71,5 +75,21 @@ public class News {
 
     public void setImerominia(Date imerominia) {
         this.imerominia = imerominia;
+    }
+
+    public String getLink() {
+        return link;
+    }
+
+    public void setLink(String link) {
+        this.link = link;
+    }
+
+    public String getSitename() {
+        return sitename;
+    }
+
+    public void setSitename(String sitename) {
+        this.sitename = sitename;
     }
 }

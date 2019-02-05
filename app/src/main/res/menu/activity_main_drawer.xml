@@ -6,7 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/allnews"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_near_me_black_24dp"
             android:title="All news" />
     </group>
 
@@ -14,19 +14,19 @@
         <menu>
             <item
                 android:id="@+id/samosnews"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/ic_near_me_black_24dp"
                 android:title="Σάμος" />
             <item
                 android:id="@+id/chiosnews"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_near_me_black_24dp"
                 android:title="Χίος" />
             <item
                 android:id="@+id/mitilininews"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_near_me_black_24dp"
                 android:title="Μυτιλήνη" />
             <item
                 android:id="@+id/limnosnews"
-                android:icon="@drawable/ic_menu_send"
+                android:icon="@drawable/ic_near_me_black_24dp"
                 android:title="Λήμνος" />
         </menu>
     </item>

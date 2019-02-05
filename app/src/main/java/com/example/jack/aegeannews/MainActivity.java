@@ -23,103 +23,78 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, AsyncResponse {
 
-    private RecyclerView recyclerView;
+    private ShimmerRecyclerView recyclerView;
     private NewsAdapter adapter;
-    private List<News> newslist;
+    private List<News> newslist; //i lista pou xrisimopoieitai gia na emfanizontai ta dedomena sta views
+    private ArrayList<News> allNews;
+    private ArrayList<News> samosNews;
+    private ArrayList<News> lesvosNews;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
-        Intent intent = new Intent(this, SplashScreen.class);
-        startActivity(intent);
-        finish();
+//        Intent intent = new Intent(this, SplashScreen.class);
+//        startActivity(intent);
+//        finish();
 
-//        setSupportActionBar(toolbar);
-//        newslist = new ArrayList<>();
-//
-//        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-//
-//
+        setSupportActionBar(toolbar);
+        newslist = new ArrayList<>();
+        samosNews = new ArrayList<>();
+        lesvosNews = new ArrayList<>();
+        allNews = new ArrayList<>();
+
+        recyclerView = (ShimmerRecyclerView) findViewById(R.id.recycler_view);
+
+
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(5), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+
         adapter = new NewsAdapter(this, newslist);
         recyclerView.setAdapter(adapter);
-//
-//        GrabNews grabNews =  new GrabNews();
-//        grabNews.delegate = this;
-//        grabNews.execute();
 
+        recyclerView.showShimmerAdapter();
+        adapter.notifyDataSetChanged();
 
+        GrabNewsSamos grabNews = new GrabNewsSamos(false);
+        grabNews.delegate = this;
+        grabNews.execute();
 
 
         try {
-           // Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
+            // Glide.with(this).load(R.drawable.cover).into((ImageView) findViewById(R.id.backdrop));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-//                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-//        drawer.addDrawerListener(toggle);
-//        toggle.syncState();
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
 
-       // NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-       // navigationView.setNavigationItemSelectedListener(this);
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
-
-//    private void initCollapsingToolbar() {
-//        final CollapsingToolbarLayout collapsingToolbar =
-//                (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-//        collapsingToolbar.setTitle(" ");
-//        AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
-//        appBarLayout.setExpanded(true);
-//
-//        // hiding & showing the title when toolbar expanded & collapsed
-//        appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-//            boolean isShow = false;
-//            int scrollRange = -1;
-//
-//            @Override
-//            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//                if (scrollRange == -1) {
-//                    scrollRange = appBarLayout.getTotalScrollRange();
-//                }
-//                if (scrollRange + verticalOffset == 0) {
-//                    collapsingToolbar.setTitle(getString(R.string.app_name));
-//                    isShow = true;
-//                } else if (isShow) {
-//                    collapsingToolbar.setTitle(" ");
-//                    isShow = false;
-//                }
-//            }
-//        });
-//    }
-
-//    @Override
-//    public void onBackPressed() {
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        if (drawer.isDrawerOpen(GravityCompat.START)) {
-//            drawer.closeDrawer(GravityCompat.START);
-//        } else {
-//            super.onBackPressed();
-//        }
-//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -143,33 +118,96 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
+        item.setChecked(true);
         int id = item.getItemId();
 
         if (id == R.id.allnews) {
+            if (samosNews.isEmpty()) {
+                recyclerView.showShimmerAdapter();
+                Log.e("ALL", "Samos news is empty");
+                GrabNewsSamos grabNews = new GrabNewsSamos(true);
+                grabNews.delegate = this;
+                grabNews.execute();
+            }
+            if (lesvosNews.isEmpty()){
+                recyclerView.showShimmerAdapter();
+                Log.e("ALL", "Lesvos news is empty");
+                GrabNewsLesvos grabNews2 = new GrabNewsLesvos(true);
+                grabNews2.delegate = this;
+                grabNews2.execute();
+            }
+            else{
+                this.newslist.clear();
+                this.newslist.addAll(allNews);
+                Collections.shuffle(this.newslist);
+            }
+            recyclerView.hideShimmerAdapter();
+            adapter.notifyDataSetChanged();
 
         } else if (id == R.id.samosnews) {
+            if (samosNews.isEmpty()) {
+                recyclerView.showShimmerAdapter();
+                adapter.notifyDataSetChanged();
+
+                GrabNewsSamos grabNews = new GrabNewsSamos(false);
+                grabNews.delegate = this;
+                grabNews.execute();
+            }
+            else{
+                this.newslist.clear();
+                this.newslist.addAll(samosNews);
+                adapter.notifyDataSetChanged();
+            }
 
         } else if (id == R.id.chiosnews) {
 
         } else if (id == R.id.mitilininews) {
+            if (lesvosNews.isEmpty()) {
+                recyclerView.showShimmerAdapter();
+                adapter.notifyDataSetChanged();
 
+                GrabNewsLesvos grabNews = new GrabNewsLesvos(false);
+                grabNews.delegate = this;
+                grabNews.execute();
+            }
+            else{
+                this.newslist.clear();
+                this.newslist.addAll(lesvosNews);
+                adapter.notifyDataSetChanged();
+            }
         } else if (id == R.id.limnosnews) {
 
         }
 
-       // DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //drawer.closeDrawer(GravityCompat.START);
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
     @Override
-    public void processFinish(ArrayList<News> news) {
-        this.newslist.addAll(news);
-        Log.d("Found", newslist.get(0).getTitle());
+    public void processFinish(ArrayList<News> news, String site, boolean allNews) {
+        recyclerView.hideShimmerAdapter();
+        if (site.equals("Samos")) {
+            this.samosNews.addAll(news);
+            this.allNews.addAll(samosNews);
+            this.newslist.clear();
+            this.newslist.addAll(samosNews);
+        }
+        else if (site.equals("Lesvos")) {
+            this.lesvosNews.addAll(news);
+            this.allNews.addAll(lesvosNews);
+            this.newslist.clear();
+            this.newslist.addAll(lesvosNews);
+        }
+        if (allNews){
+            this.newslist.clear();
+            this.newslist.addAll(samosNews);
+            this.newslist.addAll(lesvosNews);
+            Collections.shuffle(this.newslist);
+        }
         adapter.notifyDataSetChanged();
 
     }
