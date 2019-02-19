@@ -1,9 +1,11 @@
-package com.example.jack.aegeannews;
+package com.example.jack.aegeannews.NewsGrabber;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.example.jack.aegeannews.AsyncResponse;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -14,46 +16,41 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
-public class GrabNewsSamos extends AsyncTask<Void, Void, ArrayList<News> > {
+
+public class GrabNewsLesvos extends AsyncTask<Void, Void, ArrayList<News>> {
     public AsyncResponse delegate = null;
     private boolean allNews;
 
-    public GrabNewsSamos(boolean allNews) {
-        this.allNews = allNews;
-    }
-
-    public void grabSamos24(boolean allNews ) {
+    public GrabNewsLesvos(boolean allNews) {
         this.allNews = allNews;
     }
 
     @Override
     protected void onPostExecute(ArrayList<News> news) {
-        delegate.processFinish(news, "Samos", allNews);
+        delegate.processFinish(news, "Lesvos", allNews);
     }
 
     @Override
     protected ArrayList<News> doInBackground(Void... voids) {
-        String URL = "https://www.samos24.gr/";
+        String URL = "https://www.lesvosnews.gr/category/lesvos/";
         ArrayList<News> news = new ArrayList<>();
         try {
             int i = 0;
             //2. Fetch the HTML code
             Document document = Jsoup.connect(URL).get();
             //3. Parse the HTML to extract links to other URLs
-            Elements linksOnPage = document.getElementsByClass("mvp-feat1-list-cont");
+            Elements linksOnPage = document.getElementsByClass("entry-header");
 
             //query for getting the news title
             for (Element page : linksOnPage) {
                 Elements titles = page.select("h2");
                 news.add(new News());
-                news.get(i).setSitename("www.samos24.gr");
-                news.get(i++).setTitle(titles.html());
-                if (i==10)
-                    break;
+                news.get(i).setSitename("www.lesvosnews.gr");
+                news.get(i++).setTitle(titles.text());
             }
             //query for getting the news image
             i = 0;
-            for (Element element : document.getElementsByClass("mvp-feat1-list-img")) {
+            for (Element element : document.getElementsByClass("post-thumb")) {
                 //System.out.println(element.html());
                 //System.out.println( element.select("[src]").attr("abs:src"));
                 String imageUrl = (element.select("[src]").attr("abs:src"));
@@ -66,11 +63,9 @@ public class GrabNewsSamos extends AsyncTask<Void, Void, ArrayList<News> > {
                     e.printStackTrace();
                 }
                 news.get(i++).setImageBit(mIcon11);
-                if (i==10)
-                    break;
             }
 
-            Element column = document.getElementById("mvp-feat-tab-col1");
+            Elements column = document.getElementsByClass("entry-title");
             //query for getting the news title
             i = 0;
             for (Element link : column.select("a[href]")) {

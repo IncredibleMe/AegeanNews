@@ -1,4 +1,4 @@
-package com.example.jack.aegeannews;
+package com.example.jack.aegeannews.NewsGrabber;
 
 
 import android.graphics.Bitmap;

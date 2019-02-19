@@ -10,25 +10,52 @@
             android:title="All news" />
     </group>
 
-    <item android:title="Νησιά">
+
+    <item
+        android:id="@+id/samosnews"
+        android:icon="@drawable/ic_near_me_black_24dp"
+        android:title="Σάμος">
         <menu>
             <item
-                android:id="@+id/samosnews"
-                android:icon="@drawable/ic_near_me_black_24dp"
-                android:title="Σάμος" />
+                android:id="@+id/samosall"
+                android:title="Όλα τα νέα" />
             <item
-                android:id="@+id/chiosnews"
-                android:icon="@drawable/ic_near_me_black_24dp"
-                android:title="Χίος" />
+                android:id="@+id/samospolitics"
+                android:title="Πολιτικά" />
             <item
-                android:id="@+id/mitilininews"
-                android:icon="@drawable/ic_near_me_black_24dp"
-                android:title="Μυτιλήνη" />
+                android:id="@+id/samosdimos"
+                android:title="Δήμος" />
             <item
-                android:id="@+id/limnosnews"
-                android:icon="@drawable/ic_near_me_black_24dp"
-                android:title="Λήμνος" />
+                android:id="@+id/samosperifereia"
+                android:title="Περιφέρεια" />
         </menu>
+    </item>
+
+    <item
+        android:id="@+id/mitilininews"
+        android:icon="@drawable/ic_near_me_black_24dp"
+        android:title="Μυτιλήνη">
+        <menu>
+            <item
+                android:id="@+id/lesvospolitics"
+                android:title="Πολιτικά" />
+            <item
+                android:id="@+id/lesvosdimos"
+                android:title="Δήμος" />
+            <item
+                android:id="@+id/lesvosperifereia"
+                android:title="Περιφέρεια" />
+        </menu>
+    </item>
+    <item
+        android:id="@+id/limnosnews"
+        android:icon="@drawable/ic_near_me_black_24dp"
+        android:title="Λήμνος" />
+    <item
+        android:id="@+id/chiosnews"
+        android:icon="@drawable/ic_near_me_black_24dp"
+        android:title="Χίος">
+
     </item>
 
 </menu>

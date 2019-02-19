@@ -1,13 +1,8 @@
 package com.example.jack.aegeannews;
 
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,15 +17,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
 import com.cooltechworks.views.shimmer.ShimmerRecyclerView;
+import com.example.jack.aegeannews.NewsGrabber.GrabNewsLesvos;
+import com.example.jack.aegeannews.NewsGrabber.GrabNewsSamos;
+import com.example.jack.aegeannews.NewsGrabber.GrabPolitikaSamos;
+import com.example.jack.aegeannews.NewsGrabber.News;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -41,7 +36,10 @@ public class MainActivity extends AppCompatActivity
     private List<News> newslist; //i lista pou xrisimopoieitai gia na emfanizontai ta dedomena sta views
     private ArrayList<News> allNews;
     private ArrayList<News> samosNews;
+    private ArrayList<News> samosPolitics;
     private ArrayList<News> lesvosNews;
+
+
 
 
 
@@ -58,6 +56,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         newslist = new ArrayList<>();
         samosNews = new ArrayList<>();
+        samosPolitics = new ArrayList<>();
         lesvosNews = new ArrayList<>();
         allNews = new ArrayList<>();
 
@@ -93,14 +92,19 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        Menu m = navigationView.getMenu();
+        //SubMenu subMenu = m.addSubMenu("")
         navigationView.setNavigationItemSelectedListener(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
-        return true;
+//        MenuItem samosMenu = menu.findItem(R.id.samosnews);
+//        if (samosMenu!=null)
+//        getMenuInflater().inflate(R.menu.sub_menu_samos, samosMenu.getSubMenu());
+        return super.onPrepareOptionsMenu(menu);
+
     }
 
     @Override
@@ -117,6 +121,16 @@ public class MainActivity extends AppCompatActivity
 
         return super.onOptionsItemSelected(item);
     }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+//        MenuItem samosMenu = menu.findItem(R.id.samosnews);
+//        if (samosMenu!=null)
+//        getMenuInflater().inflate(R.menu.sub_menu_samos, samosMenu.getSubMenu());
+        return super.onPrepareOptionsMenu(menu);
+    }
+
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -147,7 +161,7 @@ public class MainActivity extends AppCompatActivity
             recyclerView.hideShimmerAdapter();
             adapter.notifyDataSetChanged();
 
-        } else if (id == R.id.samosnews) {
+        } else if (id == R.id.samosall) {
             if (samosNews.isEmpty()) {
                 recyclerView.showShimmerAdapter();
                 adapter.notifyDataSetChanged();
@@ -159,6 +173,21 @@ public class MainActivity extends AppCompatActivity
             else{
                 this.newslist.clear();
                 this.newslist.addAll(samosNews);
+                adapter.notifyDataSetChanged();
+            }
+
+        } else if (id == R.id.samospolitics) {
+            if (samosPolitics.isEmpty()) {
+                recyclerView.showShimmerAdapter();
+                adapter.notifyDataSetChanged();
+
+                GrabPolitikaSamos grabNews = new GrabPolitikaSamos(false);
+                grabNews.delegate = this;
+                grabNews.execute();
+            }
+            else{
+                this.newslist.clear();
+                this.newslist.addAll(samosPolitics);
                 adapter.notifyDataSetChanged();
             }
 
@@ -201,6 +230,11 @@ public class MainActivity extends AppCompatActivity
             this.allNews.addAll(lesvosNews);
             this.newslist.clear();
             this.newslist.addAll(lesvosNews);
+        }
+        else if (site.equals("SamosPolitics")) {
+            this.samosPolitics.addAll(news);
+            this.newslist.clear();
+            this.newslist.addAll(samosPolitics);
         }
         if (allNews){
             this.newslist.clear();

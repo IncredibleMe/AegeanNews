@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Όλα"
+        android:id="@+id/olaSamos" />
+    <item android:title="Πολιτικά"
+        android:id="@+id/politikaSamos" />
+    <item android:title="Δήμος"
+        android:id="@+id/dimosSamos" />
+    <item android:title="Πολιτιστικά"
+        android:id="@+id/politistikaSamos" />
+</menu>

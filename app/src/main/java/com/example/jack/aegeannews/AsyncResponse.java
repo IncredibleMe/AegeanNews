@@ -1,5 +1,7 @@
 package com.example.jack.aegeannews;
 
+import com.example.jack.aegeannews.NewsGrabber.News;
+
 import java.util.ArrayList;
 
 /**
